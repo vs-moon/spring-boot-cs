@@ -23,12 +23,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.xiao.cs.common.box.basic.AutoRegistrarBasic;
 import org.xiao.cs.redis.XiaoCSRedisAutoConfiguration;
+import org.xiao.cs.sso.box.filter.ProcessingExceptionFilter;
+import org.xiao.cs.sso.box.filter.ProcessingPermissionFilter;
+import org.xiao.cs.sso.box.filter.ProcessingTokenFilter;
 import org.xiao.cs.sso.box.processing.ProcessingDenied;
 import org.xiao.cs.sso.box.processing.ProcessingMatchers;
 import org.xiao.cs.sso.box.processing.ProcessingPoint;
-import org.xiao.cs.sso.box.filter.ProcessingPermissionFilter;
-import org.xiao.cs.sso.box.filter.ProcessingExceptionFilter;
-import org.xiao.cs.sso.box.filter.ProcessingTokenFilter;
 import org.xiao.cs.sso.box.properties.SSOProperties;
 import org.xiao.cs.sso.box.service.ProcessingConfigInvoker;
 

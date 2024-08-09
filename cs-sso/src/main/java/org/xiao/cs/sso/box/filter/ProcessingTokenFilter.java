@@ -132,7 +132,7 @@ public class ProcessingTokenFilter extends OncePerRequestFilter {
         Claims claims = jws.getBody();
         ClaimsOptions claimsOptions = tokenUtils.toBean(claims);
         String username = claims.getSubject();
-        String applicationName = SpringUtils.getProperty("spring.application.name");
+        String applicationName = SpringUtils.getApplicationName();
 
         final AtomicReference<UsernamePasswordAuthenticationToken> atomicReference =
                 new AtomicReference<>(new UsernamePasswordAuthenticationToken(null, null));

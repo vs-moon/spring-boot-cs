@@ -15,15 +15,17 @@ public class ClaimsOptions {
     private String role;
     private String permission;
     private String cross;
+    private String crossSite;
 
     public ClaimsOptions() {}
 
-    public ClaimsOptions(Long id, String org, String role, String permission, String cross) {
+    public ClaimsOptions(Long id, String org, String role, String permission, String cross, String crossSite) {
         this.id = id;
         this.org = org;
         this.role = role;
         this.permission = permission;
         this.cross = cross;
+        this.crossSite = crossSite;
     }
 
     public Long getId() {
@@ -78,17 +80,33 @@ public class ClaimsOptions {
         this.cross = cross;
     }
 
+    public String getCrossSite() {
+        return crossSite;
+    }
+
+    public void setCrossSite(String crossSite) {
+        this.crossSite = crossSite;
+    }
+
     public static ClaimsOptions build(Long id, AuthoritySymbol<String> authoritySymbol) {
         Map<String, String[]> crossMap = ssoProperties.getToken().getCross();
-        String[] crossItemArray = crossMap.get(SpringUtils.getProperty("spring.application.name"));
+        Map<String, String[]> crossSiteMap = ssoProperties.getToken().getCrossSite();
+
+        String[] crossItemArray = crossMap.get(SpringUtils.getApplicationName());
+        String[] crossSiteItemArray = crossSiteMap.get(SpringUtils.getApplicationName());
+
         String crossItemString = StringUtils.isNoneBlank(crossItemArray) ?
                 StringUtils.join(crossItemArray, SymbolProperties.SEPARATE) :
+                StringUtils.EMPTY;
+        String crossSiteItemString = StringUtils.isNoneBlank(crossSiteItemArray) ?
+                StringUtils.join(crossSiteItemArray, SymbolProperties.SEPARATE) :
                 StringUtils.EMPTY;
 
         return new ClaimsOptions(id,
                 authoritySymbol.orgJoin(),
                 authoritySymbol.roleJoin(),
                 authoritySymbol.permissionJoin(),
-                crossItemString);
+                crossItemString,
+                crossSiteItemString);
     }
 }

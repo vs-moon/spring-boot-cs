@@ -29,6 +29,6 @@ public class CommonRequest<T> {
     }
 
     public static <T> CommonRequest<T> builder(T args) {
-        return new CommonRequest<>(SpringUtils.getProperty("spring.application.name"), args);
+        return new CommonRequest<>(SpringUtils.getApplicationName(), args);
     }
 }

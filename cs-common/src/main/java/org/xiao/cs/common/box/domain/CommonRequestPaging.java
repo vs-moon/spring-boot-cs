@@ -24,7 +24,7 @@ public class CommonRequestPaging<T> extends CommonRequest<T> {
     }
 
     public static <T> CommonRequestPaging<T> builder(T args, Paging paging) {
-        return new CommonRequestPaging<>(SpringUtils.getProperty("spring.application.name"), args, paging);
+        return new CommonRequestPaging<>(SpringUtils.getApplicationName(), args, paging);
     }
 
     public static class Paging {

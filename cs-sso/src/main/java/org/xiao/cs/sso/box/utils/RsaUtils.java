@@ -18,7 +18,7 @@ public class RsaUtils {
         return getPublicKey(readFile(filename));
     }
 
-    private static PublicKey getPublicKey(byte [] bytes) throws Exception {
+    public static PublicKey getPublicKey(byte [] bytes) throws Exception {
         return KeyFactory
                 .getInstance(DEFAULT_ALGORITHM)
                 .generatePublic(new X509EncodedKeySpec(Base64
@@ -30,7 +30,7 @@ public class RsaUtils {
         return getPrivateKey(readFile(filename));
     }
 
-    private static PrivateKey getPrivateKey(byte [] bytes) throws InvalidKeySpecException, NoSuchAlgorithmException {
+    public static PrivateKey getPrivateKey(byte [] bytes) throws InvalidKeySpecException, NoSuchAlgorithmException {
         return KeyFactory
                 .getInstance(DEFAULT_ALGORITHM)
                 .generatePrivate(new PKCS8EncodedKeySpec(Base64
@@ -38,13 +38,16 @@ public class RsaUtils {
                         .decode(bytes)));
     }
 
-    public static void generate (String publicKeyFilename, String privateKeyFilename, String secret, int keySize) throws Exception {
+    public static KeyPair generate (String secret, int keySize) throws Exception {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(DEFAULT_ALGORITHM);
         keyPairGenerator.initialize(Math.max(keySize, DEFAULT_KEY_SIZE), new SecureRandom(secret.getBytes()));
-        KeyPair keyPair = keyPairGenerator.genKeyPair();
+        return keyPairGenerator.genKeyPair();
+    }
 
-        writeFile(publicKeyFilename, Base64.getEncoder().encode(keyPair.getPublic().getEncoded()));
-        writeFile(privateKeyFilename, Base64.getEncoder().encode(keyPair.getPrivate().getEncoded()));
+    public static void generateAndWrite (String pubFilename, String priFilename, String secret, int keySize) throws Exception {
+        KeyPair keyPair = generate(secret, keySize);
+        writeFile(pubFilename, Base64.getEncoder().encode(keyPair.getPublic().getEncoded()));
+        writeFile(priFilename, Base64.getEncoder().encode(keyPair.getPrivate().getEncoded()));
     }
 
     public static byte [] readFile (String fileName) throws Exception {

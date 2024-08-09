@@ -30,7 +30,9 @@ public class ResponseVolley implements ResponseBodyAdvice<Object> {
                                   @Nullable ServerHttpRequest request,
                                   @Nullable ServerHttpResponse response) {
 
-        if (body instanceof Page<?> page) {
+        if (body instanceof PageInfo<?> pageInfo) {
+            return CommonResponse.Builder.success(pageInfo);
+        } else if (body instanceof Page<?> page) {
             PageInfo<?> pageInfo = new PageInfo<>(page, page.getPageSize());
             return CommonResponse.Builder.success(pageInfo);
         } else if (body instanceof CommonResponse<?>) {

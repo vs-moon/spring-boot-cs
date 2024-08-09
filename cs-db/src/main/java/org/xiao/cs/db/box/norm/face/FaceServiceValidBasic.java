@@ -1,9 +1,9 @@
-package org.xiao.cs.db.box.service.entry;
+package org.xiao.cs.db.box.norm.face;
 
 import org.xiao.cs.common.box.domain.ArgsState;
 import org.xiao.cs.common.box.domain.CommonRequest;
 
-public interface EntryServiceValidBasic<By, To> {
+public interface FaceServiceValidBasic<By, To> {
     default int validOne(CommonRequest<ArgsState<By, To>> record) {
         return 0;
     }

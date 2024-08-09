@@ -1,10 +1,10 @@
-package org.xiao.cs.db.box.service.entry;
+package org.xiao.cs.db.box.norm.face;
 
 import org.xiao.cs.common.box.domain.CommonRequest;
 
 import java.util.List;
 
-public interface EntryServiceDeleteBasic<By> {
+public interface FaceServiceDeleteBasic<By> {
     default int deleteOne(CommonRequest<By> record) {
         return 0;
     }

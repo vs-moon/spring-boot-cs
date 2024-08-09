@@ -1,8 +1,8 @@
-package org.xiao.cs.db.box.service.business;
+package org.xiao.cs.db.box.norm.among;
 
 import java.util.List;
 
-public interface BusinessServiceUpdate<T> {
+public interface AmongServiceUpdate<T> {
     default int updateOne(T record) {
         return 0;
     }

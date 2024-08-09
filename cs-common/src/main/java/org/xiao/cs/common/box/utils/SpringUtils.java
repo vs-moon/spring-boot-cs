@@ -7,6 +7,8 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.xiao.cs.common.box.constant.CommonConstant;
+
 import java.util.Map;
 
 @Component
@@ -23,11 +25,15 @@ public class SpringUtils implements ApplicationContextAware, EnvironmentAware {
         return applicationContext.containsBean(beanName) ? applicationContext.getBean(beanName) : null;
     }
 
-    public static <T> Map<String, T> getBeansOfType(Class<T> baseType){
+    public static <T> Map<String, T> getBeansOfType(Class<T> baseType) {
         return applicationContext.getBeansOfType(baseType);
     }
 
-    public static String getProperty(String key){
+    public static String getApplicationName() {
+        return environment.getProperty(CommonConstant.SPRING_APPLICATION_NAME);
+    }
+
+    public static String getProperty(String key) {
         return environment.getProperty(key);
     }
 

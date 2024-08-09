@@ -9,8 +9,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpMethod;
 import org.xiao.cs.common.box.constant.AgeingConstant;
 import org.xiao.cs.common.box.enumerate.CalendarMapping;
+import org.xiao.cs.sso.box.enumerate.VisitorMode;
 import org.xiao.cs.sso.box.utils.RsaUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.*;
@@ -27,6 +29,7 @@ public class SSOProperties implements InitializingBean {
     private String issuer;
     private boolean commonResource;
     private ConfineProperties confine;
+    private Map<String, List<VisitCompetenceProperties>> visitCompetence = new HashMap<>();
     private MatchersProperties matchers;
     private RsaProperties rsa;
     private TokenProperties token;
@@ -69,6 +72,14 @@ public class SSOProperties implements InitializingBean {
 
     public void setConfine(ConfineProperties confine) {
         this.confine = confine;
+    }
+
+    public Map<String, List<VisitCompetenceProperties>> getVisitCompetence() {
+        return visitCompetence;
+    }
+
+    public void setVisitCompetence(Map<String, List<VisitCompetenceProperties>> visitCompetence) {
+        this.visitCompetence = visitCompetence;
     }
 
     public MatchersProperties getMatchers() {
@@ -136,6 +147,27 @@ public class SSOProperties implements InitializingBean {
 
         public void setCancelEntrance(String cancelEntrance) {
             this.cancelEntrance = cancelEntrance;
+        }
+    }
+
+    public static class VisitCompetenceProperties {
+        private String visitor;
+        private VisitorMode mode = VisitorMode.R;
+
+        public String getVisitor() {
+            return visitor;
+        }
+
+        public void setVisitor(String visitor) {
+            this.visitor = visitor;
+        }
+
+        public VisitorMode getMode() {
+            return mode;
+        }
+
+        public void setMode(VisitorMode mode) {
+            this.mode = mode;
         }
     }
 
@@ -227,10 +259,34 @@ public class SSOProperties implements InitializingBean {
     }
 
     public static class RsaProperties {
-        private String publicKeyPath;
-        private String privateKeyPath;
+
         private PublicKey publicKey;
         private PrivateKey privateKey;
+
+        private Boolean keyPathFirst = false;
+
+        private String publicKeyPath;
+        private String privateKeyPath;
+
+        public PublicKey getPublicKey() {
+            return publicKey;
+        }
+
+        public void setPublicKey(String publicKey) throws Exception {
+            if (StringUtils.isNoneBlank(publicKey)) {
+                this.publicKey = RsaUtils.getPublicKey(publicKey.getBytes(StandardCharsets.UTF_8));
+            }
+        }
+
+        public PrivateKey getPrivateKey() {
+            return privateKey;
+        }
+
+        public void setPrivateKey(String privateKey) throws Exception {
+            if (StringUtils.isNoneBlank(privateKey)) {
+                this.privateKey = RsaUtils.getPrivateKey(privateKey.getBytes(StandardCharsets.UTF_8));
+            }
+        }
 
         public String getPublicKeyPath() {
             return publicKeyPath;
@@ -248,27 +304,30 @@ public class SSOProperties implements InitializingBean {
             this.privateKeyPath = privateKeyPath;
         }
 
-        public PublicKey getPublicKey() {
-            return publicKey;
+        public Boolean getKeyPathFirst() {
+            return keyPathFirst;
         }
 
-        public PrivateKey getPrivateKey() {
-            return privateKey;
+        public void setKeyPathFirst(Boolean keyPathFirst) {
+            this.keyPathFirst = keyPathFirst;
         }
 
         public void after() throws Exception {
-            if (publicKeyPath != null) {
-                publicKey = RsaUtils.getPublicKey(publicKeyPath);
-            }
+            if (keyPathFirst) {
+                if (StringUtils.isNoneBlank(publicKeyPath)) {
+                    publicKey = RsaUtils.getPublicKey(publicKeyPath);
+                }
 
-            if (privateKeyPath != null) {
-                privateKey = RsaUtils.getPrivateKey(privateKeyPath);
+                if (StringUtils.isNoneBlank(privateKeyPath)) {
+                    privateKey = RsaUtils.getPrivateKey(privateKeyPath);
+                }
             }
         }
     }
 
     public static class TokenProperties {
         private Map<String, String[]> cross = new HashMap<>();
+        private Map<String, String[]> crossSite = new HashMap<>();
         private AgeingProperties ageing;
 
         public Map<String, String[]> getCross() {
@@ -277,6 +336,14 @@ public class SSOProperties implements InitializingBean {
 
         public void setCross(Map<String, String[]> cross) {
             this.cross = cross;
+        }
+
+        public Map<String, String[]> getCrossSite() {
+            return crossSite;
+        }
+
+        public void setCrossSite(Map<String, String[]> crossSite) {
+            this.crossSite = crossSite;
         }
 
         public AgeingProperties getAgeing() {

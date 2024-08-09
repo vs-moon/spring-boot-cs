@@ -2,6 +2,8 @@ package org.xiao.cs.common.box.constant;
 
 public class CommonConstant {
 
+    public static final String SPRING_APPLICATION_NAME = "spring.application.name";
+
     public static final String VALID_T = "1";
     public static final String VALID_F = "0";
 

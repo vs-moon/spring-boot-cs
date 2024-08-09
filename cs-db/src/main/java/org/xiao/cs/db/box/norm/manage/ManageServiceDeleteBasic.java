@@ -1,8 +1,8 @@
-package org.xiao.cs.db.box.service.business;
+package org.xiao.cs.db.box.norm.manage;
 
 import java.util.List;
 
-public interface BusinessServiceDeleteBasic<By> {
+public interface ManageServiceDeleteBasic<By> {
     default int deleteOne(By record) {
         return 0;
     }

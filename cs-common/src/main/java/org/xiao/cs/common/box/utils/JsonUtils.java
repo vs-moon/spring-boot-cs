@@ -28,7 +28,7 @@ public class JsonUtils {
         try {
             return mapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            log.error("Json 序列化出错: " + obj, e);
+            log.error("Json 序列化出错: {}", obj, e);
             return null;
         }
     }
@@ -37,7 +37,7 @@ public class JsonUtils {
         try {
             return mapper.readValue(json, tClass);
         } catch (IOException e) {
-            log.error("Json 序列化出错: " + json, e);
+            log.error("Json 序列化出错: {}", json, e);
             return null;
         }
     }
@@ -46,7 +46,7 @@ public class JsonUtils {
         try {
             return mapper.readValue(json, type);
         } catch (IOException e) {
-            log.error("Json 序列化出错: " + json, e);
+            log.error("Json 序列化出错: {}", json, e);
             return null;
         }
     }
@@ -55,7 +55,7 @@ public class JsonUtils {
         try {
             return mapper.readValue(inputStream, tClass);
         } catch (IOException e) {
-            log.error("Json 序列化出错: " + inputStream, e);
+            log.error("Json 序列化出错: {}", inputStream, e);
             return null;
         }
     }
@@ -64,7 +64,7 @@ public class JsonUtils {
         try {
             return mapper.readValue(inputStream, type);
         } catch (IOException e) {
-            log.error("Json 序列化出错: " + inputStream, e);
+            log.error("Json 序列化出错: {}", inputStream, e);
             return null;
         }
     }
@@ -73,7 +73,7 @@ public class JsonUtils {
         try {
             return mapper.readValue(json, mapper.getTypeFactory().constructMapType(Map.class, kClass, vClass));
         } catch (IOException e) {
-            log.error("Json 序列化出错: " + json, e);
+            log.error("Json 序列化出错: {}", json, e);
             return null;
         }
     }
@@ -82,7 +82,7 @@ public class JsonUtils {
         try {
             return mapper.readValue(json, mapper.getTypeFactory().constructCollectionType(List.class, eClass));
         } catch (IOException e) {
-            log.error("Json 序列化出错: " + json, e);
+            log.error("Json 序列化出错: {}", json, e);
             return null;
         }
     }

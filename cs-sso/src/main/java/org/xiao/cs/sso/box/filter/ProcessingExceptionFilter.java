@@ -22,7 +22,11 @@ public class ProcessingExceptionFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (Throwable e) {
-            handlerExceptionResolver.resolveException(request, response, null, new RuntimeException(e.getMessage(), e));
+            if (e instanceof RuntimeException runtimeException) {
+                handlerExceptionResolver.resolveException(request, response, null, runtimeException);
+            } else {
+                handlerExceptionResolver.resolveException(request, response, null, new RuntimeException(e.getMessage(), e));
+            }
         }
     }
 }

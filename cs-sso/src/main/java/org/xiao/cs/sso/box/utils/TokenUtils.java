@@ -62,7 +62,7 @@ public class TokenUtils {
     }
 
     public String issue(String username, Long expires, ClaimsOptions claimsOptions) {
-        String audience = SpringUtils.getProperty("spring.application.name");
+        String audience = SpringUtils.getApplicationName();
 
 
         if (ssoProperties.isIssuanceCenter()) {
@@ -289,6 +289,6 @@ public class TokenUtils {
     }
 
     public String getNamespace(TokenAgeing tokenAgeing, String signature) {
-        return "TOKEN:" + tokenAgeing + ":" + SpringUtils.getProperty("spring.application.name") + ":" + signature;
+        return "TOKEN:" + tokenAgeing + ":" + SpringUtils.getApplicationName() + ":" + signature;
     }
 }

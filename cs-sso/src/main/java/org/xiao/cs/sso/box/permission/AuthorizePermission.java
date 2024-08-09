@@ -1,11 +1,18 @@
 package org.xiao.cs.sso.box.permission;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.xiao.cs.common.box.exception.CommonException;
+import org.xiao.cs.common.box.utils.SpringUtils;
 import org.xiao.cs.properties.box.SymbolProperties;
+import org.xiao.cs.sso.box.enumerate.VisitorMode;
+import org.xiao.cs.sso.box.properties.SSOProperties;
 import org.xiao.cs.sso.box.utils.TokenUtils;
+
+import java.util.List;
 
 @Component(AuthorizePermission.NAME)
 public class AuthorizePermission {
@@ -15,8 +22,45 @@ public class AuthorizePermission {
     @Resource
     SymbolProperties symbolProperties;
     @Resource
+    SSOProperties ssoProperties;
+    @Resource
     TokenUtils tokenUtils;
 
+    public boolean hasVisitR() throws CommonException {
+        return hasVisitCompetence(VisitorMode.R);
+    }
+
+    public boolean hasVisitW() throws CommonException {
+        return hasVisitCompetence(VisitorMode.W);
+    }
+
+    public boolean hasVisitRW() throws CommonException {
+        return hasVisitCompetence(VisitorMode.RW);
+    }
+
+    // 访问能力权限
+    public boolean hasVisitCompetence(VisitorMode visitorMode) throws CommonException {
+        String applicationName = SpringUtils.getApplicationName();
+        Jws<Claims> parser = tokenUtils.parser();
+        String issuer = parser.getBody().getIssuer();
+
+        if (applicationName.equals(issuer)) {
+            return true;
+        }
+
+        List<SSOProperties.VisitCompetenceProperties> visitCompetenceProperties =
+                ssoProperties.getVisitCompetence().get(applicationName);
+
+        if (visitCompetenceProperties != null && !visitCompetenceProperties.isEmpty()) {
+            return visitCompetenceProperties
+                    .stream()
+                    .anyMatch(visit -> issuer.equals(visit.getVisitor()) && visitorMode.equals(visit.getMode()));
+        }
+
+        return false;
+    }
+
+    // 组织权限
     public boolean hasOrganizations(String aimOrganizations) throws CommonException {
         return hasOrganizations(aimOrganizations.split(symbolProperties.getSeparate()));
     }
@@ -67,6 +111,7 @@ public class AuthorizePermission {
         return false;
     }
 
+    // 角色权限
     public boolean hasRoles(String aimRoles) throws CommonException {
         return hasRoles(aimRoles.split(symbolProperties.getSeparate()));
     }
@@ -117,6 +162,7 @@ public class AuthorizePermission {
         return false;
     }
 
+    // 标识符权限
     public boolean hasPermissions(String aimPermissions) throws CommonException {
         return hasPermissions(aimPermissions.split(symbolProperties.getSeparate()));
     }

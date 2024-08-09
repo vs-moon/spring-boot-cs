@@ -1,8 +1,8 @@
-package org.xiao.cs.db.box.service.business;
+package org.xiao.cs.db.box.norm.manage;
 
 import org.xiao.cs.common.box.domain.ArgsState;
 
-public interface BusinessServiceValidBasic<By, To> {
+public interface ManageServiceValidBasic<By, To> {
     default int validOne(ArgsState<By, To> record) {
         return 0;
     }

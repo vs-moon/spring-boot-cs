@@ -1,10 +1,10 @@
-package org.xiao.cs.db.box.service.entry;
+package org.xiao.cs.db.box.norm.face;
 
 import org.xiao.cs.common.box.domain.CommonRequest;
 
 import java.util.List;
 
-public interface EntryServiceInsert<T> {
+public interface FaceServiceInsert<T> {
     default int insertOne(CommonRequest<T> record) {
         return 0;
     }

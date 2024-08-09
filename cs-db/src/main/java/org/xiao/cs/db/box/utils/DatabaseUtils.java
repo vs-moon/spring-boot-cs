@@ -21,7 +21,7 @@ public class DatabaseUtils {
         return DB_PROPERTIES.getDefaultDatasource();
     }
 
-    public static <T> T getConnection(Function<Connection, T> function) throws SQLException {
+    public static <R> R getConnection(Function<Connection, R> function) throws SQLException {
         try(Connection connection = getDataSource().getConnection()) {
             return function.apply(connection);
         }

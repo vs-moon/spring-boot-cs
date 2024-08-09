@@ -20,6 +20,8 @@ public class HeadersAttributeProperties implements InitializingBean {
     private String authorizationRemember;
     private String authorizationHibernation;
     private String authorizationRenewal;
+    private String authorizationCross;
+    private String authorizationCrossSite;
 
     public String getAuthorizationProxy() {
         return authorizationProxy;
@@ -59,6 +61,22 @@ public class HeadersAttributeProperties implements InitializingBean {
 
     public void setAuthorizationRenewal(String authorizationRenewal) {
         this.authorizationRenewal = authorizationRenewal;
+    }
+
+    public String getAuthorizationCross() {
+        return authorizationCross;
+    }
+
+    public void setAuthorizationCross(String authorizationCross) {
+        this.authorizationCross = authorizationCross;
+    }
+
+    public String getAuthorizationCrossSite() {
+        return authorizationCrossSite;
+    }
+
+    public void setAuthorizationCrossSite(String authorizationCrossSite) {
+        this.authorizationCrossSite = authorizationCrossSite;
     }
 
     @Override

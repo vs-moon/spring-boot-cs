@@ -21,7 +21,7 @@ public class RuntimeExceptionQueueSita implements RuntimeExceptionQueue {
         try {
             if (RootContext.inGlobalTransaction()) {
                 log.error("======= 分布式服务执行异常: 进行全局事务回滚");
-                log.error("======= XID: {} | 模式: {} | 服务名称: {} | 端口号: {}", RootContext.getXID(), RootContext.getBranchType(), SpringUtils.getProperty("spring.application.name"), SpringUtils.getProperty("server.port"));
+                log.error("======= XID: {} | 模式: {} | 服务名称: {} | 端口号: {}", RootContext.getXID(), RootContext.getBranchType(), SpringUtils.getApplicationName(), SpringUtils.getProperty("server.port"));
                 GlobalTransactionContext.reload(RootContext.getXID()).rollback();
             }
         } catch (TransactionException transactionException) {

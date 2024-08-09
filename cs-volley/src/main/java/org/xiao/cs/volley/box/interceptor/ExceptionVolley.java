@@ -8,11 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.ErrorResponse;
-import org.xiao.cs.common.box.exception.CommonException;
-import org.xiao.cs.common.box.exception.CommonHttpException;
-import org.xiao.cs.common.box.domain.CommonResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.xiao.cs.common.box.domain.CommonResponse;
+import org.xiao.cs.common.box.exception.BusinessException;
+import org.xiao.cs.common.box.exception.CommonException;
+import org.xiao.cs.common.box.exception.CommonHttpException;
 import org.xiao.cs.volley.box.service.RuntimeExceptionQueue;
 
 import java.util.List;
@@ -38,6 +39,9 @@ public class ExceptionVolley {
                                            Throwable throwable,
                                            Boolean isFirst) {
 
+        // TODO 无论任何异常都要提前写入 500 异常状态码 (除非是业务异常 BusinessException), 调用方需要直观的得知是否异常, 不采取无感知方式
+        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+
         Throwable cause = throwable.getCause();
 
         // TODO 嵌套异常
@@ -51,7 +55,14 @@ public class ExceptionVolley {
             return CommonResponse.Builder.failure(commonException.getStatus());
         }
 
-        // TODO 自定义公共异常 (Http)
+        // TODO 自定义业务异常 (状态码设置为 200, 以免调用方无法根据业务状态码判断业务响应, 需要在业务代码中抛出)
+        else if (throwable instanceof BusinessException businessException) {
+            response.setStatus(HttpStatus.OK.value());
+            log.error(businessException.getMessage(), businessException);
+            return CommonResponse.Builder.failure(businessException.getStatus());
+        }
+
+        // TODO 自定义公共异常 (Http) (用于其他模块抛出标准语义性的异常, 比如鉴权模块)
         else if (throwable instanceof CommonHttpException commonHttpException) {
             HttpStatus httpStatus = commonHttpException.getStatus();
             response.setStatus(httpStatus.value());
@@ -59,7 +70,7 @@ public class ExceptionVolley {
             return CommonResponse.BuilderStatus.failure(httpStatus);
         }
 
-        // TODO 运行时异常
+        // TODO 运行时异常 (优先遍历实现了 RuntimeExceptionQueue 的实现类, 由实现类内部捕获后做出相应的异常逻辑处理, 比如捕获了第三方异常, 抛出其他异常)
         else if (throwable instanceof RuntimeException runtimeException) {
             if (isFirst) {
                 for (RuntimeExceptionQueue queueItem : runtimeExceptionQueue) {

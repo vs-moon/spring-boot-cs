@@ -45,14 +45,22 @@ public class ProcessingSuccess implements AuthenticationSuccessHandler {
         AccountBody accountBody = (AccountBody) ScopeCacheUtils.get(ProcessingConstant.SCOPE_CACHE_CURRENT_ACCOUNT_BODY_KEY);
         ScopeCacheUtils.remove(ProcessingConstant.SCOPE_CACHE_CURRENT_ACCOUNT_BODY_KEY);
 
-        String routine = tokenUtils.issueRoutine(accountBody.getUsername(), ClaimsOptions.build(accountBody.getBasic().getId(), accountBody.getAuthoritySymbol()));
+        // 载体
+        ClaimsOptions claimsOptions = ClaimsOptions.build(accountBody.getBasic().getId(), accountBody.getAuthoritySymbol());
+        String routine = tokenUtils.issueRoutine(accountBody.getUsername(), claimsOptions);
         String montageRoutine = tokenUtils.montageToken(routine);
+        // 令牌
         response.setHeader(HttpHeaders.AUTHORIZATION, montageRoutine);
         tokenResponseBody.setRoutine(montageRoutine);
+        // 允许跨域的服务
+        response.setHeader(headersAttributeProperties.getAuthorizationCross(), claimsOptions.getCross());
+        // 允许被跨域的站点
+        response.setHeader(headersAttributeProperties.getAuthorizationCrossSite(), claimsOptions.getCrossSite());
 
         boolean isRemember = Boolean.parseBoolean(request.getHeader(headersAttributeProperties.getAuthorizationRemember()));
 
         if (isRemember) {
+            // 持久化令牌
             String hibernation = tokenUtils.issueHibernation(accountBody.getUsername(), ClaimsOptions.build(accountBody.getBasic().getId(), accountBody.getAuthoritySymbol()));
             String montageHibernation = tokenUtils.montageToken(hibernation);
             response.setHeader(headersAttributeProperties.getAuthorizationHibernation(), montageHibernation);
